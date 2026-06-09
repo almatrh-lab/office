@@ -48,5 +48,31 @@ Error generating stack: `+o.message+`
   </head>
   <body>
     <div id="root"></div>
+  <script>
+  /* ANEW追加: ①開いたら自動で「今すぐ更新」を1回押す ②ANEWアプリに戻るボタン（サーバー連携ロジックは未変更） */
+  (function(){
+    function addBackBtn(){
+      if(document.getElementById('anewBackBtn'))return;
+      var a=document.createElement('a');
+      a.id='anewBackBtn';
+      a.href='https://anew-shift.vercel.app';
+      a.textContent='← ANEWアプリに戻る';
+      a.setAttribute('style','position:fixed;left:14px;bottom:14px;z-index:99999;background:#16A34A;color:#fff;font-size:13px;font-weight:800;text-decoration:none;padding:10px 16px;border-radius:999px;box-shadow:0 3px 12px rgba(0,0,0,.28);font-family:system-ui,sans-serif;');
+      document.body.appendChild(a);
+    }
+    function autoUpdateOnce(){
+      var tries=0;
+      var iv=setInterval(function(){
+        tries++;
+        var btns=document.getElementsByTagName('button');
+        for(var i=0;i<btns.length;i++){
+          if((btns[i].textContent||'').indexOf('今すぐ更新')>=0){ btns[i].click(); clearInterval(iv); return; }
+        }
+        if(tries>24) clearInterval(iv); /* 約12秒で諦める */
+      },500);
+    }
+    setTimeout(function(){ try{ addBackBtn(); autoUpdateOnce(); }catch(e){} }, 800);
+  })();
+  </script>
   </body>
 </html>
